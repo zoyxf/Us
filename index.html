@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>100 Days - Sameer ❤️ Nadiya - My Niya Jii</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Instrument+Serif:ital@0;1&family=Noto+Serif+Tamil:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#08080d;--card:#14141e;--card2:#1c1c2a;--blue:#2b88ff;--pink:#ff4d8d;--gold:#ffcc66;--text:#f6f6f8;--muted:#9aa0b8;--border:#24243a}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',system-ui,sans-serif;overflow-x:hidden;line-height:1.6}
+.serif{font-family:'Instrument Serif',serif}
+#progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--pink),var(--gold));z-index:9999;width:0%}
+#hearts{position:fixed;inset:0;pointer-events:none;z-index:0}
+.heart{position:absolute;animation:float linear infinite;opacity:0.7}
+@keyframes float{0%{transform:translateY(110vh) rotate(0) scale(.8);opacity:0}15%{opacity:.7}85%{opacity:.5}100%{transform:translateY(-10vh) rotate(180deg) scale(1.3);opacity:0}}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;position:relative;z-index:1}
+.badge{background:linear-gradient(135deg,rgba(43,136,255,.12),rgba(255,77,141,.12));border:1px solid rgba(255,255,255,.08);padding:10px 18px;border-radius:100px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:28px}
+.hero h1{font-size:clamp(56px,14vw,128px);font-weight:700;line-height:.9;letter-spacing:-.04em}
+.hero h1 .grad{background:linear-gradient(135deg,var(--blue),var(--pink),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero .subtitle{margin-top:18px;font-size:clamp(18px,3vw,24px);color:var(--muted);max-width:640px}
+.hero .subtitle b{color:var(--text)}
+.nicknames{margin-top:28px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:720px}
+.pill{padding:8px 14px;border-radius:100px;font-size:13px;font-weight:600;border:1px solid var(--border);background:var(--card);color:var(--muted);transition:all .3s}
+.pill.active{background:linear-gradient(135deg,var(--blue),var(--pink));color:white;border-color:transparent;transform:scale(1.05);box-shadow:0 8px 20px rgba(255,77,141,.3)}
+.pill.his{background:var(--card);border-color:rgba(43,136,255,.3);color:#8ab4ff}
+.pill.his.active{background:linear-gradient(135deg,#2b88ff,#5aa9ff)}
+.names{display:flex;align-items:center;gap:14px;margin-top:32px;font-size:20px;font-weight:700;flex-wrap:wrap;justify-content:center}
+.dot{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--pink));display:grid;place-items:center;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+.scroll{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--muted);font-size:10px;letter-spacing:.22em;text-transform:uppercase;animation:bounce 2s infinite}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+.scroll .line{width:1px;height:36px;background:linear-gradient(to bottom,var(--muted),transparent)}
+.section{max-width:740px;margin:0 auto;padding:72px 20px;position:relative;z-index:1}
+.label{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--pink);font-weight:700;margin-bottom:14px}
+.h2{font-size:clamp(30px,6vw,46px);line-height:1.08;letter-spacing:-.02em;margin-bottom:18px}
+.h2 i{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;color:var(--muted)}
+.p{color:#c9c9d6;font-size:17px;line-height:1.8;margin-bottom:14px}
+.p strong{color:var(--text)}
+.p.tamil{font-family:'Noto Serif Tamil',serif;color:var(--gold)}
+.chat{background:var(--card);border:1px solid var(--border);border-radius:22px;overflow:hidden;margin:26px 0;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.chat-head{padding:14px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);background:rgba(255,255,255,.02)}
+.chat-head .ava{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#2a2a3e,#5a5a7a);display:grid;place-items:center;font-weight:700;font-size:14px}
+.chat-body{padding:16px;background:#0e0e14;max-height:420px;overflow:auto}
+.msg{max-width:80%;padding:9px 13px;border-radius:16px;font-size:14px;line-height:1.4;margin:6px 0}
+.msg.me{background:var(--blue);color:white;margin-left:auto;border-bottom-right-radius:5px}
+.msg.her{background:#25253a;color:#ececf4;margin-right:auto;border-bottom-left-radius:5px}
+.img-card{border-radius:20px;overflow:hidden;border:1px solid var(--border);margin:20px 0;background:var(--card);position:relative;cursor:pointer;transition:transform .3s}
+.img-card:hover{transform:translateY(-3px) scale(1.01);box-shadow:0 16px 40px rgba(0,0,0,.4)}
+.img-card img{width:100%;display:block}
+.img-card .cap{position:absolute;bottom:0;left:0;right:0;padding:10px 14px;background:linear-gradient(transparent,rgba(0,0,0,.85));font-size:12px;color:white;display:flex;justify-content:space-between}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0}
+@media(max-width:600px){.grid{grid-template-columns:1fr}}
+.map{background:linear-gradient(135deg,var(--card),var(--card2));border:1px solid var(--border);border-radius:22px;padding:24px;margin:24px 0;position:relative;overflow:hidden}
+.map::before{content:'';position:absolute;top:-40%;right:-20%;width:70%;height:180%;background:radial-gradient(circle,rgba(255,77,141,.10),transparent 60%)}
+.route{position:relative;margin:18px 0}
+.route::before{content:'';position:absolute;left:11px;top:10px;bottom:10px;width:2px;background:linear-gradient(to bottom,var(--blue),var(--pink));opacity:.4}
+.step{display:flex;gap:14px;padding:10px 0;position:relative}
+.step-dot{width:24px;height:24px;border-radius:50%;background:var(--bg);border:2px solid var(--blue);display:grid;place-items:center;flex-shrink:0;z-index:1;font-size:11px}
+.step.active .step-dot{background:var(--blue);color:white;box-shadow:0 0 0 6px rgba(43,136,255,.18)}
+.step b{font-size:14px} .step span{font-size:12px;color:var(--muted)}
+.letter{background:#fffef7;color:#1c1c22;border-radius:22px;padding:32px 26px;margin:28px 0;transform:rotate(-.3deg);box-shadow:0 24px 70px rgba(0,0,0,.35);position:relative}
+.letter h3{font-family:'Instrument Serif',serif;font-size:30px;margin-bottom:14px}
+.letter p{font-family:'Instrument Serif',serif;font-size:17px;line-height:27px;color:#2b2b33;margin-bottom:12px}
+.final{text-align:center;padding:90px 20px 70px;max-width:720px;margin:0 auto;position:relative;z-index:1}
+.final h2{font-size:clamp(34px,7vw,56px);line-height:.96;letter-spacing:-.03em}
+.btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--blue),var(--pink));color:white;padding:16px 28px;border-radius:100px;font-weight:700;font-size:15px;border:none;cursor:pointer;box-shadow:0 14px 30px rgba(43,136,255,.35);margin-top:22px;transition:all .25s}
+.btn:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 22px 44px rgba(255,77,141,.45)}
+.music{position:fixed;bottom:18px;right:18px;z-index:60;width:48px;height:48px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:grid;place-items:center;cursor:pointer;box-shadow:0 8px 22px rgba(0,0,0,.35)}
+.music.playing{background:linear-gradient(135deg,var(--blue),var(--pink));border-color:transparent}
+#lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);backdrop-filter:blur(14px);z-index:10000;display:none;place-items:center;padding:20px}
+#lightbox.active{display:grid}
+#lightbox img{max-width:92vw;max-height:92vh;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.8)}
+#lightbox .close{position:absolute;top:18px;right:18px;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);color:white;display:grid;place-items:center;cursor:pointer;font-size:20px}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:9999}
+.kutty-marquee{overflow:hidden;white-space:nowrap;margin:18px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:10px 0}
+.kutty-track{display:inline-block;animation:marquee 18s linear infinite}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.kutty-track span{margin:0 18px;color:var(--muted);font-size:13px;letter-spacing:.08em}
+.kutty-track span b{color:var(--pink)}
+/* Distance Map */
+#distanceMap{width:100%;height:420px;border-radius:22px;border:1px solid var(--border);margin:22px 0;z-index:1}
+.dist-card{background:linear-gradient(135deg,var(--card),var(--card2));border:1px solid var(--border);border-radius:22px;padding:20px;margin:20px 0;display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;text-align:center}
+.dist-card div b{display:block;font-size:22px;color:var(--text)} .dist-card div span{font-size:11px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+@media(max-width:600px){.dist-card{grid-template-columns:1fr} #distanceMap{height:340px}}
+.leaflet-container{background:#0e0e14 !important}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div id="hearts"></div>
+
+<div class="hero">
+<div class="badge">Tomorrow • 22 Sept 2026 • Our 100th Day • 14 June → 22 Sept</div>
+<h1 class="serif"><span class="grad">100</span> Days<br>of <span class="grad">Nadiya</span></h1>
+<div class="subtitle">My <b>Niya jii</b>, my favourite human — from a random "Oh accha" to "I love you so much 😘" — you became my everything in 100 days, Sameer style.</div>
+<div class="names"><span>Sameer • auxust</span><div class="dot">♡</div><span>Nadiya • kelpreally17</span></div>
+<div style="margin-top:12px;color:var(--muted);font-size:12px;letter-spacing:.14em;text-transform:uppercase">She calls me →</div>
+<div class="nicknames" id="nicks-his">
+<div class="pill his active">bby</div><div class="pill his">daddy</div><div class="pill his active">habibi</div><div class="pill his">pati ji</div>
+</div>
+<div style="margin-top:16px;color:var(--muted);font-size:12px;letter-spacing:.14em;text-transform:uppercase">I call her →</div>
+<div class="nicknames" id="nicks">
+<div class="pill active">ji</div><div class="pill">jaan</div><div class="pill">dear</div><div class="pill">darling</div><div class="pill active">pattu kutty</div><div class="pill">ammu kutty</div><div class="pill active">chella kutty</div><div class="pill">thanga kutty</div><div class="pill active">bujji kutty</div><div class="pill">pusu pusu pusu</div>
+</div>
+<div class="scroll"><span>Scroll our story</span><div class="line"></div></div>
+</div>
+
+<div class="kutty-marquee"><div class="kutty-track">
+<span>my <b>pattu kutty</b> ♡</span><span>Sameer = your <b>habibi</b> ♡</span><span>my <b>ammu kutty</b> ♡</span><span>you = my <b>bby</b> ♡</span><span>my <b>chella kutty</b> ♡</span><span>you = my <b>pati ji</b> ♡</span><span>my <b>thanga kutty</b> ♡</span><span>my <b>bujji kutty</b> ♡</span><span>my <b>pusu pusu pusu</b> ♡</span><span>Sameer = your <b>daddy</b> ♡</span>
+<span>my <b>pattu kutty</b> ♡</span><span>Sameer = your <b>habibi</b> ♡</span><span>my <b>ammu kutty</b> ♡</span><span>you = my <b>bby</b> ♡</span><span>my <b>chella kutty</b> ♡</span><span>you = my <b>pati ji</b> ♡</span><span>my <b>thanga kutty</b> ♡</span><span>my <b>bujji kutty</b> ♡</span><span>my <b>pusu pusu pusu</b> ♡</span><span>Sameer = your <b>daddy</b> ♡</span>
+</div></div>
+
+<!-- DISTANCE MAP SECTION -->
+<div class="section">
+<div class="label">1740 KM APART — BUT ONE HEART</div>
+<h2 class="h2 serif">Chennai → Bhairab Bazar, <i>you're here.</i></h2>
+<p class="p">My Niya jii lives here — <b>Mirnagor Govt Primary School, Bhairab</b> — 9PMM+27V, Bangladesh (24.3826°N, 91.7331°E). I live in Chennai, Tamil Nadu (13.0827°N, 80.2707°E). You showed me this place on Google Maps when you said "Bhairab Bazar likho, Kuch dikhati hu".</p>
+
+<div id="distanceMap"></div>
+
+<div class="dist-card">
+<div><b>1,740 KM</b><span>As crow flies ✈️</span></div>
+<div><b>~2,437 KM</b><span>By road 🚗</span></div>
+<div><b>2h 45m</b><span>Flight + drive 🕐</span></div>
+</div>
+
+<div class="map">
+<div class="route">
+<div class="step active"><div class="step-dot">📍</div><div><b>Sameer — Chennai, Tamil Nadu, India</b><br><span>13.0827°N, 80.2707°E — "Kaha rehte ho? Tamil Nadu" — Your bby, habibi, daddy, pati ji is waiting here for his pattu kutty</span></div></div>
+<div class="step"><div class="step-dot">💙</div><div><b>1740 km of pyaar — Every km counts</b><br><span>From my heart in Chennai to your home in Mirnagar. Sameer × Nadiya = 1740 km, but distance is just a number when you call me habibi</span></div></div>
+<div class="step active"><div class="step-dot">🏠</div><div><b>Nadiya — Mirnagar, Bhairab Bazar, Bangladesh</b><br><span>24.3826°N, 91.7331°E — 9PMM+27V — Your school, your masjid, your world. You showed me: "Yaha pe ek school hai waha padhti thi Mai"</span></div></div>
+</div>
+<p class="p" style="margin-top:14px;font-size:13px;color:var(--muted)"><a href="https://maps.app.goo.gl/a5kN2HahjKNrm8M2A" target="_blank" style="color:var(--blue);text-decoration:none">→ Open her exact location in Google Maps (your link)</a> • <a href="https://www.google.com/maps/dir/Chennai,+Tamil+Nadu/Mirnagar+Govt+Primary+School,+Bhairab+Bazar,+Bangladesh" target="_blank" style="color:var(--pink);text-decoration:none">→ Get directions Chennai → Mirnagar</a></p>
+</div>
+</div>
+
+<div class="section">
+<div class="label">Day 1 • 12:58 PM — How it started</div>
+<h2 class="h2 serif">You said "Oh accha" and I was already <i>gone for you.</i></h2>
+<p class="p">I asked "How is climate there?" You said "Barish hota he kabhi kabhi. Nhito medium temperature rehta h". Then I asked the most important question of my life:</p>
+<div class="chat"><div class="chat-head"><div class="ava">N</div><div><b>Nadiya • Niya jii</b><br><span style="font-size:11px;color:var(--muted)">Day 1 • If I come to Bangladesh where can I find you?</span></div></div><div class="chat-body"><div class="msg me">If I come to Bangladesh where can I find you</div><div class="msg her">Tum aoge?</div><div class="msg me">No idea 🙂<br>May be</div><div class="msg her">Lekin me jaungi</div><div class="msg me">For seeing you</div></div></div>
+<p class="p"><strong>Day 1 and you already said "Lekin me jaungi" — you would come for me. My pattu kutty, you had me at that line.</strong></p>
+<div class="img-card" onclick="openLb('images/photo_2026-09-21_19-28-53.jpg')"><img src="images/photo_2026-09-21_19-28-53.jpg"><div class="cap"><span>Day 1 • 12:58 PM • First promise</span><span>tap to zoom</span></div></div>
+</div>
+
+<div class="section">
+<div class="label">Our dream map — Day 1 itself</div>
+<h2 class="h2 serif">From Tamil Nadu heat to Kashmir snow, <i>you listened.</i></h2>
+<div class="map">
+<div class="route">
+<div class="step active"><div class="step-dot">📍</div><div><b>Chennai, Tamil Nadu — Sameer's home</b><br><span>Where your bby, habibi, pati ji lives, waiting for his chella kutty</span></div></div>
+<div class="step"><div class="step-dot">🏍️</div><div><b>Bottom to Top of India by Road</b><br><span>"From bottom of India to top of it, By road, Experience every thing" — you said "Wow nice"</span></div></div>
+<div class="step"><div class="step-dot">❄️</div><div><b>Kashmir & Ladakh — Your dream</b><br><span>"snow fall dikhna h mujhe 🙂" — you, my thanga kutty</span></div></div>
+<div class="step"><div class="step-dot">🇧🇩</div><div><b>Bhairab Bazar, Bangladesh — Your home — 1740km away</b><br><span>We walked on Google Maps together: "Bhairab Bazar likho, Kuch dikhati hu" — you showed me your school, Mirnagar</span></div></div>
+<div class="step"><div class="step-dot">🇳🇱</div><div><b>Keukenhof, Netherlands — Our tulip date</b><br><span>"Imagine hum dono iss tulip field ke beech mein walk kar rahe hain... aur koi hume disturb nahi kar raha."</span></div></div>
+<div class="step"><div class="step-dot">💛</div><div><b>Future Mall — "future mai"</b><br><span>"Sam kahi esi jagah le chalo jaha ham dono jayenge future mai 🥲"</span></div></div>
+</div>
+</div>
+<div class="grid">
+<div class="img-card" onclick="openLb('images/photo_2026-09-21_19-28-52.jpg')"><img src="images/photo_2026-09-21_19-28-52.jpg"><div class="cap">Bangladesh plan</div></div>
+<div class="img-card" onclick="openLb('images/photo_2026-09-21_19-28-55.jpg')"><img src="images/photo_2026-09-21_19-28-55.jpg"><div class="cap">Snow fall dream</div></div>
+</div>
+</div>
+
+<div class="section">
+<div class="label">Our inside jokes — Chudail & Farishta</div>
+<h2 class="h2 serif">You called yourself chudail, I saw <i>an angel.</i></h2>
+<p class="p">You: "Me chudail hi hu" — Me: "I don't think so 🤔" — Then you got promoted:</p>
+<div class="chat"><div class="chat-body"><div class="msg her">No we r not just a friend we r best friend</div><div class="msg me">Best friend? Achha, then I got promoted 😊❤️</div><div class="msg me">aakhirkar, main us farishte ko nahin khona chahta jo khud ko chudail kehti hai<br><span style="opacity:.8">In the end, I just don't want to lose an angel who calls herself a witch</span></div><div class="msg her">Me chudail hi hu</div></div></div>
+<p class="p tamil">Niya jii, nee romba azhagu — you are my angel without wings.</p>
+<div class="grid">
+<div class="img-card" onclick="openLb('images/photo_2026-09-21_19-29-02.jpg')"><img src="images/photo_2026-09-21_19-29-02.jpg"><div class="cap">Best friend promotion ❤️</div></div>
+<div class="img-card" onclick="openLb('images/photo_2026-09-21_19-29-01.jpg')"><img src="images/photo_2026-09-21_19-29-01.jpg"><div class="cap">I feel really good talking with you...</div></div>
+</div>
+</div>
+
+<div class="section">
+<div class="label">You always win — my cute gamer</div>
+<h2 class="h2 serif">Carrom, Chess, Ludo — <i>193 vs 142</i>, you still beat me.</h2>
+<p class="p">You won 50, 48, 49 games in a row. You said "Pushpa jhukega nei sala 😏" and "To ajka winner me 🤭". My competitive ammu kutty!</p>
+<div class="grid">
+<div class="img-card" onclick="openLb('images/photo_2026-09-21_19-34-52.jpg')"><img src="images/photo_2026-09-21_19-34-52.jpg"><div class="cap">You won 50 WINS vs my 2</div></div>
+<div class="img-card" onclick="openLb('images/photo_2026-09-21_19-34-38.jpg')"><img src="images/photo_2026-09-21_19-34-38.jpg"><div class="cap">193 vs 142</div></div>
+</div>
+</div>
+
+<div class="section">
+<div class="label">My drawings for you — NIYA</div>
+<h2 class="h2 serif">I drew you because I couldn't stop <i>thinking of you.</i></h2>
+<p class="p">You have braces, so I drew you with braces and 3 hearts. I wrote NIYA in big red. I made our fingers hug with a heart in between — your fair finger with bow 🎀 and my finger holding you.</p>
+<div class="grid">
+<div class="img-card" onclick="openLb('images/photo_2026-09-21_19-34-18.jpg')"><img src="images/photo_2026-09-21_19-34-18.jpg"><div class="cap">Your drawing • BRACES • NIYA ❤️</div></div>
+<div class="img-card" onclick="openLb('images/photo_2026-09-21_19-36-03.jpg')"><img src="images/photo_2026-09-21_19-36-03.jpg"><div class="cap">Our fingers • Finger hearts</div></div>
+</div>
+</div>
+
+<div class="section">
+<div class="label">The most beautiful — Your eyes, my Nadiya</div>
+<h2 class="h2 serif">MashaAllah, my <i>thanga kutty.</i></h2>
+<div class="grid">
+<div class="img-card" onclick="openLb('images/photo_2026-09-21_19-33-43.jpg')"><img src="images/photo_2026-09-21_19-33-43.jpg"><div class="cap">Nadiya • My Niya jii</div></div>
+<div class="img-card" onclick="openLb('images/photo_2026-09-21_19-36-24.jpg')"><img src="images/photo_2026-09-21_19-36-24.jpg"><div class="cap">Your hand • Your bracelet</div></div>
+</div>
+<div class="img-card" onclick="openLb('images/photo_2026-09-21_19-33-46.jpg')"><img src="images/photo_2026-09-21_19-33-46.jpg"><div class="cap">Your eyes • My whole world</div></div>
+</div>
+
+<div class="section">
+<div class="label">Tamil lessons & cute talks</div>
+<h2 class="h2 serif">You said "Say something in Tamil" and I fell <i>more.</i></h2>
+<div class="chat"><div class="chat-body"><div class="msg her">Say something in tamil</div><div class="msg me">Nee romba somberi</div><div class="msg her">Oh nice</div><div class="msg me">Vanakkam</div><div class="msg her">I love you iska tamil kiya h</div></div></div>
+<p class="p tamil">Nadiya, unna romba pudikum di — Nee en pattu kutty da.</p>
+<div class="img-card" onclick="openLb('images/photo_2026-09-21_19-31-08.jpg')"><img src="images/photo_2026-09-21_19-31-08.jpg"><div class="cap">Dosti me no sorry no thanks</div></div>
+</div>
+
+<div class="section">
+<div class="label">The dream you told me — 2nd Aug 2026</div>
+<h2 class="h2 serif">You dreamt I kissed you. <i>I wish it was real.</i></h2>
+<div class="chat"><div class="chat-body"><div class="msg her">Tumne mujhe kiss kya sapne mai. Maine yehi dekha hai</div><div class="msg her">Tumne mujhe kiss kar diya or mai bol rhi thi tu aja online teri to khabar hai</div></div></div>
+<p class="p">My bujji kutty dreamt of me. My pusu pusu pusu, even your jinn is romantic.</p>
+<div class="grid">
+<div class="img-card" onclick="openLb('images/photo_2026-09-21_19-33-45.jpg')"><img src="images/photo_2026-09-21_19-33-45.jpg"><div class="cap">The kiss dream</div></div>
+<div class="img-card" onclick="openLb('images/photo_2026-09-21_19-33-44.jpg')"><img src="images/photo_2026-09-21_19-33-44.jpg"><div class="cap">"Teri to khabar hai"</div></div>
+</div>
+</div>
+
+<div class="section">
+<div class="label">The confession — 11:37 PM</div>
+<h2 class="h2 serif">We both said it. <i>At the same time.</i></h2>
+<div class="chat"><div class="chat-body"><div class="msg me">I love you ☺️</div><div class="msg her">I love you ☺️</div><div class="msg me">I love you so much 😘</div><div class="msg her">I love you so much 😘</div><div class="msg me">Sam, I'm yours</div><div class="msg her">Sam, I'm yours</div><div class="msg me">Come and pick me</div><div class="msg her">Come and pick me</div><div class="msg me">Only you and me<br>I will be happy with you ☺️</div><div class="msg her">I will be happy with you ☺️</div></div></div>
+<p class="p">My chella kutty, you mirrored me. "Sam, I'm yours" — I have never been happier, jaan.</p>
+<div class="grid">
+<div class="img-card" onclick="openLb('images/photo_2026-09-21_19-32-25.jpg')"><img src="images/photo_2026-09-21_19-32-25.jpg"><div class="cap">I love you exchange</div></div>
+<div class="img-card" onclick="openLb('images/photo_2026-09-21_19-34-52.jpg')"><img src="images/photo_2026-09-21_19-34-52.jpg"><div class="cap">Only you and me</div></div>
+</div>
+</div>
+
+<div class="section">
+<div class="label">Our virtual world tour</div>
+<h2 class="h2 serif">Keukenhof to Bhairab Bazar — <i>just us, no one else.</i></h2>
+<p class="p" style="font-style:italic;background:var(--card);padding:16px;border-radius:12px;border-left:3px solid var(--pink)">"Imagine hum dono iss tulip field ke beech mein walk kar rahe hain... aur koi hume disturb nahi kar raha."<br><br>"Sam kahi esi jagah le chalo jaha ham dono jayenge future mai 🥲"<br><br>"Niyaaaaaaaaaaa jiiiiiiiiiiiiii I loveeeeeee youuuuuuuu"<br><br>"Tumhare pas rakhlooooooo mujheeeeee" — "Coming soon jiiiiiiiiiiiiiiii To grab your handssss"</p>
+<div class="img-card" onclick="openLb('images/photo_2026-09-21_19-34-27.jpg')"><img src="images/photo_2026-09-21_19-34-27.jpg"><div class="cap">Google Meet virtual date</div></div>
+</div>
+
+<div class="section" style="padding-top:0">
+<div class="letter">
+<h3>To my Nadiya jii — My Niya, my bby,</h3>
+<p>My pattu kutty, my ammu kutty, my chella kutty, my thanga kutty, my bujji kutty, my pusu pusu pusu — my jaan, my dear, my darling, my ji.</p>
+<p>And I am your — <b>bby, daddy, habibi, pati ji</b> — Sameer. You call me these and my heart stops every time, my Niya jii.</p>
+<p>It's Day 100 tomorrow. 100 days ago you were just "kelpreally17". Today you are Nadiya Akther Jui — the girl who said "Sam, I'm yours" and made me the happiest boy from Chennai to Bhairab Bazar — 1740 km away, but you feel right here.</p>
+<p>Do you remember? On Day 1 you said "Me itni bhi acchi nhi hu". You were wrong, my thanga kutty. You are the best.</p>
+<p>You said "Me kisidin furrr karke ud jaungi bird ki tarhaa" and I said I will fly with you. My Niya jii, if you fly to Chennai, I will be at the airport. If you say "Come and pick me" — I will cross those 1740 km, those 2437 km by road, just to hold your hand.</p>
+<p>We walked in Bhairab Bazar on Maps. You showed me Mirnagar — "Yaha pe ek school hai waha padhti thi Mai". Now I put it on our map forever, my jaan. Your home is marked in my heart and in this website.</p>
+<p>Thank you for 100 days of calling me bby, daddy, habibi, pati ji. Thank you for letting me call you my kutty's. Thank you for staying.</p>
+<p>So, my Nadiya jii — will you be my chudail, my farishta, my best friend, my bby for the next 1000 days? Lifetime?</p>
+<p>Happy 100th Day, my Niya jii. I love you so much, ji.</p>
+<div style="margin-top:28px;font-family:'Instrument Serif',serif;font-style:italic;font-size:22px">Yours forever,<br>Sameer — your bby, your daddy, your habibi, your pati ji ❤️<br><span style="font-size:14px;color:#888">Chennai, Tamil Nadu → Bhairab Bazar, Bangladesh • 1740 KM • But 0 distance in heart<br>Who will wait: "I will be free only, So say the time, I will be there"</span></div>
+</div>
+</div>
+
+<div class="section">
+<div class="label">Curated gallery — 33 best moments</div>
+<h2 class="h2 serif">Our <i>100 days in 33 frames.</i></h2>
+<div class="grid" id="gallery"></div>
+</div>
+
+<div class="final">
+<div class="label" style="text-align:center">22 September 2026 — Tomorrow • 1740 KM → 0 KM one day</div>
+<h2 class="serif">100 days done, Niya jii.<br><i style="color:var(--pink)">Ready for our next 1000, pattu kutty?</i></h2>
+<p class="p" style="text-align:center;max-width:520px;margin:18px auto">My ammu kutty, chella kutty, thanga kutty, bujji kutty, pusu pusu pusu — I made this from our chats, your photos, our drawings, our virtual dates, and our 1740 km distance map. Click below and make a wish with me.</p>
+<button class="btn" id="promiseBtn">💍 My 100-day promise for Nadiya jii →</button>
+<p style="margin-top:20px;color:var(--muted);font-size:11px;letter-spacing:.12em">Made with ♡ by Sameer — your bby, habibi, daddy, pati ji — From Chennai to Bhairab Bazar • For my Niya jii • 1740 KM ❤️</p>
+<div style="margin-top:24px"><img src="images/video_2026-09-21_19-35-55-ezgif.com-video-to-gif-converter.gif" style="width:220px;border-radius:16px;border:1px solid var(--border)" alt="our video"></div>
+<p style="margin-top:16px"><a href="https://maps.app.goo.gl/a5kN2HahjKNrm8M2A" target="_blank" style="color:var(--blue);font-size:12px">📍 Open Nadiya's home location in Google Maps</a></p>
+</div>
+
+<div class="music" id="musicBtn">🎵</div>
+<div id="lightbox"><div class="close" onclick="closeLb()">✕</div><img id="lbImg"></div>
+<canvas class="confetti" id="confetti"></canvas>
+
+<script>
+// Gallery
+const galleryEl=document.getElementById('gallery');
+const files=["photo_2026-09-21_19-28-54.jpg","photo_2026-09-21_19-28-55.jpg","photo_2026-09-21_19-28-53.jpg","photo_2026-09-21_19-28-52.jpg","photo_2026-09-21_19-28-51.jpg","photo_2026-09-21_19-28-49.jpg","photo_2026-09-21_19-28-48.jpg","photo_2026-09-21_19-28-47.jpg","photo_2026-09-21_19-27-21.jpg","photo_2026-09-21_19-29-02.jpg","photo_2026-09-21_19-29-02 (2).jpg","photo_2026-09-21_19-29-01.jpg","photo_2026-09-21_19-29-15.jpg","photo_2026-09-21_19-29-16.jpg","photo_2026-09-21_19-31-03.jpg","photo_2026-09-21_19-31-05.jpg","photo_2026-09-21_19-31-08.jpg","photo_2026-09-21_19-32-21.jpg","photo_2026-09-21_19-32-23.jpg","photo_2026-09-21_19-32-25.jpg","photo_2026-09-21_19-33-45.jpg","photo_2026-09-21_19-33-44.jpg","photo_2026-09-21_19-33-43.jpg","photo_2026-09-21_19-34-18.jpg","photo_2026-09-21_19-36-03.jpg","photo_2026-09-21_19-34-38.jpg","photo_2026-09-21_19-34-52.jpg","photo_2026-09-21_19-34-27.jpg","photo_2026-09-21_19-36-24.jpg","photo_2026-09-21_19-36-25.jpg","photo_2026-09-21_19-33-46.jpg","photo_2026-09-21_19-33-49.jpg"];
+files.forEach(f=>{const div=document.createElement('div');div.className='img-card';div.innerHTML=`<img src="images/${f}" loading="lazy"><div class="cap"><span>${f.slice(11,19)}</span><span>♡</span></div>`;div.onclick=()=>openLb(`images/${f}`);galleryEl.appendChild(div);});
+function openLb(s){document.getElementById('lbImg').src=s;document.getElementById('lightbox').classList.add('active')}
+function closeLb(){document.getElementById('lightbox').classList.remove('active')}
+document.getElementById('lightbox').addEventListener('click',e=>{if(e.target.id==='lightbox') closeLb()});
+window.addEventListener('scroll',()=>{document.getElementById('progress').style.width=(window.scrollY/(document.body.scrollHeight-window.innerHeight)*100)+'%'});
+const hc=document.getElementById('hearts');function heart(){const h=document.createElement('div');h.className='heart';h.textContent=['♡','♥','💙','💖','✨','🥹'][Math.floor(Math.random()*6)];h.style.left=Math.random()*100+'vw';h.style.fontSize=(12+Math.random()*18)+'px';h.style.animationDuration=(6+Math.random()*8)+'s';hc.appendChild(h);setTimeout(()=>h.remove(),14000)}setInterval(heart,350);
+// Music
+let actx,playing=false;document.getElementById('musicBtn').onclick=async()=>{if(!actx)actx=new (window.AudioContext||window.webkitAudioContext)();const b=document.getElementById('musicBtn');if(playing){playing=false;b.classList.remove('playing');b.textContent='🎵';return}playing=true;b.classList.add('playing');b.textContent='⏸️';const notes=[261.63,329.63,392,523.25,392,329.63];let i=0;function play(){if(!playing)return;const o=actx.createOscillator(),g=actx.createGain();o.type='sine';o.frequency.value=notes[i%notes.length];g.gain.setValueAtTime(0,actx.currentTime);g.gain.linearRampToValueAtTime(.13,actx.currentTime+.1);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+1.3);o.connect(g);g.connect(actx.destination);o.start();o.stop(actx.currentTime+1.4);i++;setTimeout(play,720)}play()};
+// Confetti
+const canvas=document.getElementById('confetti'),ctx=canvas.getContext('2d');function rs(){canvas.width=innerWidth;canvas.height=innerHeight}rs();addEventListener('resize',rs);let parts=[];function burst(){parts=[];for(let i=0;i<200;i++)parts.push({x:innerWidth/2,y:innerHeight/2,vx:(Math.random()-.5)*14,vy:(Math.random()-.5)*14-2,r:4+Math.random()*6,color:`hsl(${200+Math.random()*80},100%,65%)`,life:1})}function anim(){ctx.clearRect(0,0,canvas.width,canvas.height);parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.16;p.vx*=.99;p.life-=.008;ctx.globalAlpha=p.life;ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill()});parts=parts.filter(p=>p.life>0);requestAnimationFrame(anim)}anim();
+document.getElementById('promiseBtn').onclick=()=>{burst();const b=document.getElementById('promiseBtn');b.innerHTML='💖 I love you so much, Niya jii 💖';b.style.background='linear-gradient(135deg,#ff4d8d,#ff8a4d)';for(let i=0;i<24;i++)setTimeout(heart,i*70);setTimeout(()=>alert("Happy 100 Days, Nadiya jii! 🥹💙\n\nMy pattu kutty, ammu kutty, chella kutty, thanga kutty, bujji kutty, pusu pusu pusu...\n\nI love you, jaan. From Chennai to Bhairab Bazar - 1740 km but you are in my heart.\n\n- Your Sameer, your bby, your daddy, your habibi, your pati ji ❤️"),900)};
+
+// Leaflet Map - Chennai to Mirnagar
+const chennai=[13.0827,80.2707];
+const mirnagar=[24.3826018,91.7331724];
+const map=L.map('distanceMap',{zoomControl:false, scrollWheelZoom:false}).setView([18.5,86],4.2);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'©OpenStreetMap, ©CartoDB',maxZoom:19}).addTo(map);
+const heartIcon=L.divIcon({html:'<div style="background:linear-gradient(135deg,#2b88ff,#ff4d8d);width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:white;font-weight:700;box-shadow:0 6px 16px rgba(0,0,0,.4);border:2px solid white">♡</div>',className:'',iconSize:[36,36],iconAnchor:[18,18]});
+const youIcon=L.divIcon({html:'<div style="background:#14141e;border:2px solid #2b88ff;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:white;font-weight:800;box-shadow:0 6px 16px rgba(43,136,255,.4)">S</div>',className:'',iconSize:[42,42],iconAnchor:[21,21]});
+const herIcon=L.divIcon({html:'<div style="background:linear-gradient(135deg,#ff4d8d,#ff8a4d);border:2px solid white;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:white;font-weight:800;box-shadow:0 6px 16px rgba(255,77,141,.5)">N</div>',className:'',iconSize:[42,42],iconAnchor:[21,21]});
+L.marker(chennai,{icon:youIcon}).addTo(map).bindPopup("<b>Sameer — Chennai</b><br>Your bby, habibi, daddy, pati ji<br>13.0827°N, 80.2707°E");
+L.marker(mirnagar,{icon:herIcon}).addTo(map).bindPopup("<b>Nadiya — Mirnagar, Bhairab Bazar</b><br>9PMM+27V, Bangladesh<br>24.3826°N, 91.7331°E<br><a href='https://maps.app.goo.gl/a5kN2HahjKNrm8M2A' target='_blank'>Open in Google Maps</a>");
+const latlngs=[chennai,mirnagar];
+const poly=L.polyline(latlngs,{color:'#2b88ff',weight:3,opacity:0.8,dashArray:'10,10'}).addTo(map);
+const mid=[(chennai[0]+mirnagar[0])/2,(chennai[1]+mirnagar[1])/2];
+L.marker(mid,{icon:heartIcon}).addTo(map).bindPopup("<b>1740 KM ❤️</b><br>Sameer ↔ Nadiya");
+map.fitBounds(L.latLngBounds(latlngs).pad(0.3));
+</script>
+</body>
+</html>
